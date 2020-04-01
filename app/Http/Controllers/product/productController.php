@@ -69,7 +69,7 @@ class productController extends Controller
     {
            $data= $request->only('product_name','product_desc');
 
-           if($request->hasFile('product_image')){
+           if($this->product_object->isImageValid($request,'product_image')){
                $image = $request->file('product_image');
 //               dd($image->storeAs("products/images",$image->getClientOriginalName()));  colocas o nome do file
                $imageServerPath = $image->store("products/images");
@@ -116,12 +116,9 @@ class productController extends Controller
     public function edit($id)
 
     {
-
-
         if(Product::where('product_id',$id)->first()){
         $product = Product::where('product_id',$id)->first();
-
-                        return  view('admin.pages.products.edit',[
+        return  view('admin.pages.products.edit',[
                 'product'=>$product
             ]);
         }
@@ -139,12 +136,21 @@ class productController extends Controller
     public function update(StoreUpdateValidateRequest $request, $id)
 
     {
+
         if(!Product::where('product_id',$id)->first()){
             return redirect()->route('products.edit');
         }
+        $data =  $request->only('product_name','product_desc');
         $product = Product::where('product_id',$id);
 
-        $product->update($request->except(['_token', '_method' ]));
+        if($this->product_object->isImageValid($request,'product_image')){
+
+            $image  = $request->product_image->store("products/images");
+            $data['product_image'] =  $image ;
+
+        }
+
+        $product->update($data);
         return  redirect()->route('products.index');
 
 

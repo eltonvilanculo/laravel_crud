@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Requests\StoreUpdateValidateRequest;
+
 
 class Product extends Model
 {
@@ -17,6 +20,18 @@ class Product extends Model
            }
         });
         return $result;
+
+    }
+
+    public  function  isImageValid(StoreUpdateValidateRequest $request,string $image){
+
+        if($request->hasFile($image) && $request->product_image->isValid()){
+
+            return true ;
+        }
+        else{
+            return false ;
+        }
 
     }
 }
