@@ -146,13 +146,14 @@ class productController extends Controller
         if($this->product_object->isImageValid($request,'product_image')){
 
             $image  = $request->product_image->store("products/images");
+//            Ate este ponto tudo funciona , porem as imagens antigas nao sao apagadas
+
             $data['product_image'] =  $image ;
 
         }
 
         $product->update($data);
         return  redirect()->route('products.index');
-
 
     }
 
